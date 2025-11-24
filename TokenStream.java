@@ -56,10 +56,15 @@ public class TokenStream {
 			nextChar = readChar();
 			if (nextChar == '/') { // If / is followed by another /
 				// skip rest of line - it's a comment.
-				// TODO TO BE COMPLETED
 				// look for <cr>, <lf>, <ff>
+				// TODO TO BE COMPLETED
+				//while (nextChar != 'n' && nextChar != 'r' && nextChar != 'f' && !isEof) {
+					//nextChar = readChar();
+				//}
+				//nextChar = readChar(); // Read next char after end of line
+				//skipWhiteSpace();
 				nextToken();
-
+			
 			} else {
 				// A slash followed by anything else must be an operator.
 				t.setValue("/");
@@ -79,29 +84,29 @@ public class TokenStream {
 				// <=
 				nextChar = readChar();
 				if(nextChar == '='){
-					t.setValue(t.getValue + nextChar);
+					t.setValue("<=");
 					nextChar = readChar();
 					return t;
 				} else {
-					t.setType("<");
+					t.setValue("<");
 				}
 				return t;
 			case '>':
 				// >=
 				nextChar = readChar();
 				if(nextChar == '='){
-					t.setValue(t.getValue + nextChar);
+					t.setValue(">=");
 					nextChar = readChar();
 					return t;
 				} else {
-					t.setType(">");
+					t.setValue(">");
 				}
 				return t;
 			case '=':
 				// ==
 				nextChar = readChar();
 				if(nextChar == '='){
-					t.setValue(t.getValue + nextChar);
+					t.setValue("==");
 					nextChar = readChar();
 					return t;
 				} else {
@@ -112,18 +117,18 @@ public class TokenStream {
 				// !=
 				nextChar = readChar();
 				if(nextChar == '='){
-					t.setValue(t.getValue + nextChar);
+					t.setValue("!=");
 					nextChar = readChar();
 					return t;
 				} else {
-					t.setType("!");
+					t.setValue("!");
 				}
 				return t;
 			case '|':
 				// Look for ||
 				nextChar = readChar();
 				if (nextChar == '|') {
-					t.setValue(t.getValue() + nextChar);
+					t.setValue("||");
 					nextChar = readChar();
 					return t;
 				} else {
@@ -135,14 +140,28 @@ public class TokenStream {
 				// Look or &&
 				nextChar = readChar();
 				if (nextChar == '&') {
-					t.setValue(t.getValue() + nextChar);
+					t.setValue("&&");
 					nextChar = readChar();
 					return t;
 				} else {
 					t.setType("Other");
 				}
-
 				return t;
+
+			
+			case ':':
+				// Look or &&
+				nextChar = readChar();
+				if (nextChar == '=') {
+					t.setValue(":=");
+					nextChar = readChar();
+					return t;
+				} else {
+					t.setType("Other");
+				}
+				return t;
+
+				
 
 			default: // all other operators
 				nextChar = readChar();
@@ -173,7 +192,7 @@ public class TokenStream {
 			// now see if this is a keyword
 			if (isKeyword(t.getValue())) {
 				t.setType("Keyword");
-			} else if (t.getValue().equals("true") || t.getValue().equals("false")) {
+			} else if (t.getValue().equals("True") || t.getValue().equals("False")) {
 				t.setType("Literal");
 			}
 			if (isEndOfToken(nextChar)) { // If token is valid, returns.
@@ -263,8 +282,8 @@ public class TokenStream {
 
 	private boolean isOperator(char c) {
 		// Checks for characters that start operators
-		// TODO TO BE COMPLETED
-		return (c == '+' || c == '-' || c == '*' || c == '/' || c == '<' || c == '>'  || c == '<=' || c == '>=' || c == '==' || c == '!='|| c == '&&' || c == '||'  || c == '!' || c == ':=');
+		// TODO TO BE COMPLETED {COMPLETED}
+		return (c == '+' || c == '-' || c == '*' || c == '/' || c == '<' || c == '>' || c == '=' || c == '&' || c == '|'  || c == '!' || c == ':');
 	}
 
 	private boolean isLetter(char c) {
